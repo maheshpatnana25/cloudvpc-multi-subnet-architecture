@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudVPC Studio | Virtual Private Cloud Multi-Subnet Architecture & Security Suite</title>
+  <meta name="description" content="Production-grade 3-Tier VPC Multi-Subnet Architecture Design, Network Simulation, Packet Tracer, Flow Log Analytics, and IaC Generator.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">VPC</div>
+      <div class="brand-info">
+        <h1>
+          CloudVPC Studio
+          <span class="badge-version">v2.5 PRO</span>
+        </h1>
+        <div class="brand-subtitle">Virtual Private Cloud Multi-Subnet Architecture Design & Security Suite</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="status-pill">
+        <span class="status-indicator"></span>
+        <span>VPC Active: <strong>10.0.0.0/16</strong> (Multi-AZ)</span>
+      </div>
+
+      <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Dark/Light Mode">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Quick Metrics Overview Strip -->
+  <section class="metrics-strip">
+    <div class="metric-card">
+      <div class="metric-icon blue">🌐</div>
+      <div class="metric-content">
+        <div class="metric-label">Network Capacity</div>
+        <div class="metric-val">65,536 IPs</div>
+        <div class="metric-sub">CIDR: 10.0.0.0/16 (6 Subnets)</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon green">📊</div>
+      <div class="metric-content">
+        <div class="metric-label">VPC Traffic Volume</div>
+        <div class="metric-val" id="metric-total-traffic">48.6 MB</div>
+        <div class="metric-sub">12,000+ Flow Logs Analyzed</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon red">🛡️</div>
+      <div class="metric-content">
+        <div class="metric-label">Firewall Rejection Ratio</div>
+        <div class="metric-val" id="metric-reject-ratio">8.4%</div>
+        <div class="metric-sub">Unauthorized Probes Dropped</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon amber">🚨</div>
+      <div class="metric-content">
+        <div class="metric-label">Threats Blocked</div>
+        <div class="metric-val" id="metric-threats">3 Types</div>
+        <div class="metric-sub">Port Scans & DB Probes</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Primary Navigation Bar -->
+  <nav class="nav-tabs-container">
+    <button class="nav-tab active" data-tab="topology">
+      <span>🗺️</span>
+      <span>VPC Topology Visualizer</span>
+    </button>
+    <button class="nav-tab" data-tab="simulator">
+      <span>⚡</span>
+      <span>Packet Tracer Simulator</span>
+    </button>
+    <button class="nav-tab" data-tab="analytics">
+      <span>📊</span>
+      <span>Flow Logs & Threat Analytics</span>
+      <span class="nav-tab-badge">12k</span>
+    </button>
+    <button class="nav-tab" data-tab="calculator">
+      <span>🔢</span>
+      <span>CIDR Subnet Calculator</span>
+    </button>
+    <button class="nav-tab" data-tab="auditor">
+      <span>🛡️</span>
+      <span>Compliance & Security Auditor</span>
+      <span class="nav-tab-badge">A+</span>
+    </button>
+    <button class="nav-tab" data-tab="iac">
+      <span>📄</span>
+      <span>Multi-Cloud IaC Exporter</span>
+    </button>
+    <button class="nav-tab" data-tab="guide">
+      <span>📚</span>
+      <span>Architecture & Viva Guide</span>
+    </button>
+  </nav>
+
+  <!-- Main Views Container -->
+  <main class="main-container">
+
+    <!-- ==================================================== -->
+    <!-- TAB 1: TOPOLOGY VISUALIZER -->
+    <!-- ==================================================== -->
+    <div id="tab-topology" class="tab-pane active">
+      <div class="topology-layout">
+        
+        <div class="topology-canvas-container">
+          <div class="canvas-toolbar">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="font-weight:700; font-size:0.9rem;">Network Topology Map</span>
+              <select id="tier-filter-select" class="form-select" style="width:160px; padding:0.3rem 0.6rem; font-size:0.75rem;">
+                <option value="all">Show All Tiers</option>
+                <option value="public">Public Tier Only</option>
+                <option value="app">Application Tier Only</option>
+                <option value="db">Database Tier Only</option>
+              </select>
+            </div>
+
+            <div class="canvas-controls">
+              <button id="zoom-in-btn" class="btn-icon-sm" title="Zoom In">+</button>
+              <button id="zoom-out-btn" class="btn-icon-sm" title="Zoom Out">-</button>
+              <button id="zoom-reset-btn" class="btn-icon-sm" title="Reset View">↺</button>
+            </div>
+          </div>
+
+          <svg id="vpc-topology-svg" class="topology-svg" viewBox="0 0 1120 620"></svg>
+        </div>
+
+        <!-- Interactive Inspector Panel -->
+        <div class="inspector-panel">
+          <div class="inspector-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <div class="inspector-title">Component Inspector</div>
+          </div>
+          <div id="inspector-content">
+            <div style="color:var(--text-muted); font-size:0.85rem;">Click on any component or subnet in the topology to inspect its CIDR, routes, NACL, and Security Group rules.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 2: PACKET TRACER SIMULATOR -->
+    <!-- ==================================================== -->
+    <div id="tab-simulator" class="tab-pane">
+      <div class="simulator-layout">
+        
+        <!-- Simulation Config Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚙️ Packet Configuration</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Pre-configured Scenarios</label>
+            <select id="sim-preset-scenario" class="form-select">
+              <option value="legit_https">1. Legitimate Public User -> Web App (HTTPS 443) [ALLOW]</option>
+              <option value="direct_db_attack">2. External Attacker -> Direct DB Subnet (Port 5432) [DROP]</option>
+              <option value="app_to_db">3. App Tier Node -> RDS Database Query (Port 5432) [ALLOW]</option>
+              <option value="ssh_attack">4. External Attacker -> SSH Brute Force App Subnet [DROP]</option>
+              <option value="bastion_ssh">5. Corporate Admin -> Bastion Host SSH Jump [ALLOW]</option>
+              <option value="app_egress_nat">6. App Node Outbound -> OS Updates via NAT Gateway [ALLOW]</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Traffic Source</label>
+            <select id="sim-source" class="form-select">
+              <option value="internet">Public Internet Client</option>
+              <option value="malicious_ip">External Untrusted / Attacker IP</option>
+              <option value="bastion">Corporate Bastion Host (10.0.1.200)</option>
+              <option value="app_node">App Server Node (10.0.10.45)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Source IP Address</label>
+            <input type="text" id="sim-source-ip" class="form-input" value="203.0.113.15">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Destination Target</label>
+            <select id="sim-destination" class="form-select">
+              <option value="alb">Application Load Balancer (Public Tier)</option>
+              <option value="app_node">App Server Node (Private App Tier)</option>
+              <option value="database">RDS PostgreSQL Cluster (Isolated DB Tier)</option>
+              <option value="external_api">External Cloud API (via NAT Gateway)</option>
+            </select>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Protocol</label>
+              <select id="sim-protocol" class="form-select">
+                <option value="TCP">TCP</option>
+                <option value="UDP">UDP</option>
+                <option value="ICMP">ICMP</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destination Port</label>
+              <input type="number" id="sim-port" class="form-input" value="443">
+            </div>
+          </div>
+
+          <button id="run-simulation-btn" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:0.5rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polyline></svg>
+            <span>Run Packet Simulation</span>
+          </button>
+        </div>
+
+        <!-- Simulation Output & Hops Timeline -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔍 Network Hop Inspection & Firewall Verdict</div>
+          </div>
+          <div id="sim-results-container">
+            <div style="text-align:center; padding:3rem; color:var(--text-muted);">
+              Configure a packet and click "Run Packet Simulation" to trace its step-by-step route and firewall evaluation.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 3: FLOW LOGS & THREAT ANALYTICS -->
+    <!-- ==================================================== -->
+    <div id="tab-analytics" class="tab-pane">
+      
+      <div class="analytics-grid">
+        
+        <!-- Threat Feed Card -->
+        <div class="card threat-feed-card">
+          <div class="card-header">
+            <div class="card-title" style="color:#f87171;">🚨 Automated Threat Intelligence Feed</div>
+            <span class="badge-version" style="background:rgba(239,68,68,0.2); color:#ef4444; border-color:rgba(239,68,68,0.4);">LIVE SHIELD</span>
+          </div>
+          <div id="threat-feed-container"></div>
+        </div>
+
+        <!-- Tier Breakdown Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📊 Bandwidth & Packet Volume by Subnet Tier</div>
+          </div>
+          <div id="tier-breakdown-container"></div>
+        </div>
+
+      </div>
+
+      <!-- Top Sources & Live Stream -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📋 Live VPC Flow Logs Dataset Stream</div>
+          <div class="card-actions">
+            <button id="regen-logs-btn" class="btn btn-outline" style="font-size:0.75rem; padding:0.35rem 0.75rem;">
+              <span>⚡ Regenerate Dataset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Filters -->
+        <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+          <input type="text" id="log-search-input" class="form-input" style="width:260px;" placeholder="Search IP, port, or scenario...">
+          <select id="log-tier-filter" class="form-select" style="width:160px;">
+            <option value="">All Tiers</option>
+            <option value="Public">Public Tier</option>
+            <option value="Application">Application Tier</option>
+            <option value="Database">Database Tier</option>
+          </select>
+          <select id="log-action-filter" class="form-select" style="width:160px;">
+            <option value="">All Actions</option>
+            <option value="ACCEPT">ACCEPT Only</option>
+            <option value="REJECT">REJECT Only</option>
+          </select>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Source Address</th>
+                <th>Destination Address</th>
+                <th>Protocol</th>
+                <th>Bytes</th>
+                <th>Action</th>
+                <th>Scenario / Reason</th>
+              </tr>
+            </thead>
+            <tbody id="flow-logs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 4: CIDR SUBNET CALCULATOR -->
+    <!-- ==================================================== -->
+    <div id="tab-calculator" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔢 Multi-Tier CIDR Allocation Calculator</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Base VPC CIDR Block</label>
+            <input type="text" id="calc-vpc-cidr" class="form-input" value="10.0.0.0/16">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Subnet Prefix Size</label>
+            <select id="calc-subnet-mask" class="form-select">
+              <option value="24">/24 (256 Total IPs / 251 Usable)</option>
+              <option value="25">/25 (128 Total IPs / 123 Usable)</option>
+              <option value="26">/26 (64 Total IPs / 59 Usable)</option>
+              <option value="27">/27 (32 Total IPs / 27 Usable)</option>
+              <option value="28">/28 (16 Total IPs / 11 Usable)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Availability Zones (Redundancy)</label>
+            <select id="calc-num-azs" class="form-select">
+              <option value="2">2 AZs (Multi-AZ High Availability)</option>
+              <option value="3">3 AZs (Max Fault-Tolerance)</option>
+            </select>
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button id="calc-run-btn" class="btn btn-primary" style="width:100%; height:40px; justify-content:center;">
+              Calculate Allocation
+            </button>
+          </div>
+        </div>
+
+        <div id="cidr-results-container"></div>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 5: COMPLIANCE & SECURITY AUDITOR -->
+    <!-- ==================================================== -->
+    <div id="tab-auditor" class="tab-pane">
+      <div id="auditor-results-container"></div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 6: MULTI-CLOUD IAC EXPORTER -->
+    <!-- ==================================================== -->
+    <div id="tab-iac" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📄 Infrastructure as Code (IaC) Synthesizer</div>
+          <div class="card-actions">
+            <button id="iac-copy-btn" class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.85rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copy Code</span>
+            </button>
+            <button id="iac-download-btn" class="btn btn-primary" style="font-size:0.8rem; padding:0.4rem 0.85rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download File</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Format Buttons -->
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          <button id="iac-btn-tf" class="btn btn-outline iac-type-btn active" data-type="terraform">Terraform (AWS)</button>
+          <button id="iac-btn-cfn" class="btn btn-outline iac-type-btn" data-type="cloudformation">AWS CloudFormation</button>
+          <button id="iac-btn-pulumi" class="btn btn-outline iac-type-btn" data-type="pulumi">Pulumi (Python)</button>
+          <button id="iac-btn-bicep" class="btn btn-outline iac-type-btn" data-type="bicep">Azure Bicep / VNet</button>
+        </div>
+
+        <div class="iac-container">
+          <div class="iac-file-list" id="iac-files-list"></div>
+          <div class="code-viewer-container">
+            <div class="code-header">
+              <span id="iac-current-filename" class="code-filename">main.tf</span>
+            </div>
+            <pre id="iac-code-content" class="code-pre"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- TAB 7: ARCHITECTURE & VIVA GUIDE -->
+    <!-- ==================================================== -->
+    <div id="tab-guide" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📚 VPC Multi-Subnet Architecture & Viva Preparation Guide</div>
+        </div>
+
+        <div style="font-size:0.9rem; line-height:1.7; color:var(--text-secondary); display:flex; flex-direction:column; gap:1.5rem;">
+          <div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">1. Problem Definition & Architectural Purpose</h3>
+            <p>
+              In enterprise cloud deployments, hosting web servers, microservices, and databases in a flat network creates severe security risks.
+              This project implements a <strong>3-Tier Multi-Subnet Virtual Private Cloud (VPC)</strong> spanning 2 Availability Zones (<code>us-east-1a</code> and <code>us-east-1b</code>), strictly decoupling public entry points from sensitive database workloads.
+            </p>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
+            <div style="background:var(--public-tier-bg); border:1px solid var(--public-tier-border); padding:1rem; border-radius:var(--radius-md);">
+              <h4 style="color:#38bdf8; margin-bottom:0.4rem;">Tier 1: Public Ingress</h4>
+              <p style="font-size:0.8rem;">
+                Subnets <code>10.0.1.0/24</code> & <code>10.0.2.0/24</code>. Contains the Internet Gateway, Application Load Balancers, Bastion Host, and redundant NAT Gateways. Directly accessible over public internet on ports 80/443.
+              </p>
+            </div>
+
+            <div style="background:var(--app-tier-bg); border:1px solid var(--app-tier-border); padding:1rem; border-radius:var(--radius-md);">
+              <h4 style="color:#10b981; margin-bottom:0.4rem;">Tier 2: Private Application</h4>
+              <p style="font-size:0.8rem;">
+                Subnets <code>10.0.10.0/24</code> & <code>10.0.20.0/24</code>. No public IP addresses. Contains container & EC2 compute workloads. Outbound internet egress for security patches routes strictly via NAT Gateways.
+              </p>
+            </div>
+
+            <div style="background:var(--db-tier-bg); border:1px solid var(--db-tier-border); padding:1rem; border-radius:var(--radius-md);">
+              <h4 style="color:#f59e0b; margin-bottom:0.4rem;">Tier 3: Isolated Database</h4>
+              <p style="font-size:0.8rem;">
+                Subnets <code>10.0.100.0/24</code> & <code>10.0.200.0/24</code>. Strictly isolated route table (no route to 0.0.0.0/0). Security Group restricts ingress strictly to the Application Security Group on port 5432.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">2. Core Networking Concepts & Defense in Depth</h3>
+            <ul style="padding-left:1.5rem; display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+              <li><strong>Stateful Security Groups vs Stateless NACLs:</strong> Security Groups track connection state automatically (return traffic allowed regardless of inbound rules). NACLs are stateless and evaluate rules by ascending rule number (100 to 32766), requiring explicit outbound rules for ephemeral port ranges (1024-65535).</li>
+              <li><strong>NAT Gateway vs Internet Gateway:</strong> Internet Gateways perform 1:1 NAT for instances with public IPs. NAT Gateways perform Many-to-1 (Source NAT / PAT), allowing private instances to initiate outbound connections while preventing external inbound traffic.</li>
+              <li><strong>AWS 5 Reserved IPs per Subnet:</strong> In every subnet, AWS reserves 5 IP addresses: <code>.0</code> (Network), <code>.1</code> (VPC Router), <code>.2</code> (DNS Server), <code>.3</code> (Reserved for future use), and <code>.255</code> (Network Broadcast). For a <code>/24</code> subnet (256 addresses), exactly <strong>251 IPs</strong> are usable.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">3. Key Viva / Interview Q&A</h3>
+            <div style="display:flex; flex-direction:column; gap:0.75rem;">
+              <div style="background:var(--bg-tertiary); padding:0.85rem; border-radius:var(--radius-sm);">
+                <div style="font-weight:700; color:var(--text-primary); font-size:0.85rem;">Q: Why are database subnets not associated with the NAT Gateway route table?</div>
+                <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.25rem;">
+                  A: Databases do not need direct access to the public internet. Removing the 0.0.0.0/0 default route guarantees that database clusters cannot leak data to external servers or be exposed to zero-day external network exfiltration.
+                </div>
+              </div>
+
+              <div style="background:var(--bg-tertiary); padding:0.85rem; border-radius:var(--radius-sm);">
+                <div style="font-weight:700; color:var(--text-primary); font-size:0.85rem;">Q: Why deploy NAT Gateways in each Availability Zone instead of sharing one?</div>
+                <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.25rem;">
+                  A: Sharing a single NAT Gateway creates an AZ cross-dependency and a single point of failure (if that AZ fails, both AZs lose egress). It also incurs cross-AZ data transfer fees.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/app.js?v=2.5.1"></script>
+  <script src="/js/visualizer.js?v=2.5.1"></script>
+  <script src="/js/simulator.js?v=2.5.1"></script>
+  <script src="/js/analytics.js?v=2.5.1"></script>
+  <script src="/js/calculator.js?v=2.5.1"></script>
+  <script src="/js/auditor.js?v=2.5.1"></script>
+  <script src="/js/iac_generator.js?v=2.5.1"></script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+{
+  "dataset_metadata": {
+    "total_records": 12000,
+    "total_bytes": 514390254,
+    "total_bytes_formatted": "490.56 MB",
+    "total_packets": 441617,
+    "accept_count": 10964,
+    "reject_count": 1036,
+    "rejection_ratio_percent": 8.63
+  },
+  "tier_summary": [
+    {
+      "tier": "Application",
+      "records": 3104,
+      "total_bytes": 111210681,
+      "total_packets": 110887,
+      "accepted": 3045,
+      "rejected": 59,
+      "reject_ratio": 1.9
+    },
+    {
+      "tier": "Database",
+      "records": 2398,
+      "total_bytes": 196925104,
+      "total_packets": 123301,
+      "accepted": 1820,
+      "rejected": 578,
+      "reject_ratio": 24.1
+    },
+    {
+      "tier": "Public",
+      "records": 6498,
+      "total_bytes": 206254469,
+      "total_packets": 207429,
+      "accepted": 6099,
+      "rejected": 399,
+      "reject_ratio": 6.14
+    }
+  ],
+  "top_sources": [
+    {
+      "ip": "10.0.10.45",
+      "total_bytes": 143876248,
+      "packets": 97589,
+      "actions": {
+        "ACCEPT": 1341
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "10.0.20.78",
+      "total_bytes": 136548305,
+      "packets": 91785,
+      "actions": {
+        "ACCEPT": 1275
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "10.0.2.18",
+      "total_bytes": 56200922,
+      "packets": 56321,
+      "actions": {
+        "ACCEPT": 1528
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "10.0.1.15",
+      "total_bytes": 55007163,
+      "packets": 54507,
+      "actions": {
+        "ACCEPT": 1517
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "198.51.100.210",
+      "total_bytes": 16010437,
+      "packets": 18220,
+      "actions": {
+        "ACCEPT": 683
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "198.51.100.101",
+      "total_bytes": 15929742,
+      "packets": 18184,
+      "actions": {
+        "ACCEPT": 681
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "203.0.113.88",
+      "total_bytes": 15531505,
+      "packets": 17667,
+      "actions": {
+        "ACCEPT": 669
+      },
+      "is_threat": false
+    },
+    {
+      "ip": "203.0.113.155",
+      "total_bytes": 15423489,
+      "packets": 17229,
+      "actions": {
+        "ACCEPT": 666
+      },
+      "is_threat": false
+    }
+  ],
+  "top_ports": [
+    {
+      "port": 5432,
+      "service": "PostgreSQL Database",
+      "total_bytes": 196879804,
+      "records": 1947,
+      "accepted": 1820,
+      "rejected": 127
+    },
+    {
+      "port": 443,
+      "service": "HTTPS (Web Ingress)",
+      "total_bytes": 145726216,
+      "records": 3478,
+      "accepted": 3478,
+      "rejected": 0
+    },
+    {
+      "port": 8080,
+      "service": "App Microservice",
+      "total_bytes": 111208877,
+      "records": 3063,
+      "accepted": 3045,
+      "rejected": 18
+    },
+    {
+      "port": 80,
+      "service": "HTTP (Web Ingress)",
+      "total_bytes": 60474429,
+      "records": 2621,
+      "accepted": 2621,
+      "rejected": 0
+    },
+    {
+      "port": 22,
+      "service": "SSH Secure Shell",
+      "total_bytes": 50304,
+      "records": 319,
+      "accepted": 0,
+      "rejected": 319
+    },
+    {
+      "port": 1433,
+      "service": "MSSQL",
+      "total_bytes": 16824,
+      "records": 171,
+      "accepted": 0,
+      "rejected": 171
+    },
+    {
+      "port": 27017,
+      "service": "MongoDB",
+      "total_bytes": 14056,
+      "records": 141,
+      "accepted": 0,
+      "rejected": 141
+    },
+    {
+      "port": 3306,
+      "service": "MySQL Database",
+      "total_bytes": 13716,
+      "records": 123,
+      "accepted": 0,
+      "rejected": 123
+    }
+  ],
+  "security_threats": [
+    {
+      "threat_name": "SECURITY ALERT: Port Scanning Reconnaissance (Blocked by NACL/SG)",
+      "incident_count": 199,
+      "unique_attackers": 5,
+      "attacker_ips": [
+        "185.220.101.5",
+        "91.240.118.172",
+        "45.155.205.233",
+        "194.26.29.112",
+        "141.98.11.88"
+      ],
+      "targeted_ports": [
+        27017,
+        25,
+        445,
+        23,
+        1433,
+        9200,
+        21,
+        3389,
+        8080
+      ],
+      "status": "BLOCKED_BY_FIREWALL",
+      "severity": "MEDIUM"
+    },
+    {
+      "threat_name": "SECURITY ALERT: Unauthorized External DB Probe (Blocked by SG)",
+      "incident_count": 518,
+      "unique_attackers": 5,
+      "attacker_ips": [
+        "141.98.11.88",
+        "91.240.118.172",
+        "194.26.29.112",
+        "45.155.205.233",
+        "185.220.101.5"
+      ],
+      "targeted_ports": [
+        27017,
+        3306,
+        5432,
+        1433
+      ],
+      "status": "BLOCKED_BY_FIREWALL",
+      "severity": "CRITICAL"
+    },
+    {
+      "threat_name": "SECURITY ALERT: Unauthorized SSH Attempt (Blocked by SG)",
+      "incident_count": 319,
+      "unique_attackers": 5,
+      "attacker_ips": [
+        "141.98.11.88",
+        "185.220.101.5",
+        "91.240.118.172",
+        "194.26.29.112",
+        "45.155.205.233"
+      ],
+      "targeted_ports": [
+        22
+      ],
+      "status": "BLOCKED_BY_FIREWALL",
+      "severity": "HIGH"
+    }
+  ],
+  "traffic_trend": [
+    {
+      "time": "08-15 12:00",
+      "bytes": 4325243,
+      "packets": 3474
+    },
+    {
+      "time": "08-15 16:00",
+      "bytes": 43498592,
+      "packets": 37858
+    },
+    {
+      "time": "08-15 20:00",
+      "bytes": 44125543,
+      "packets": 37739
+    },
+    {
+      "time": "08-16 00:00",
+      "bytes": 42738714,
+      "packets": 36187
+    },
+    {
+      "time": "08-16 04:00",
+      "bytes": 43289514,
+      "packets": 37019
+    },
+    {
+      "time": "08-16 08:00",
+      "bytes": 41843821,
+      "packets": 36002
+    },
+    {
+      "time": "08-16 12:00",
+      "bytes": 42304573,
+      "packets": 36566
+    },
+    {
+      "time": "08-16 16:00",
+      "bytes": 41084852,
+      "packets": 35624
+    },
+    {
+      "time": "08-16 20:00",
+      "bytes": 43979821,
+      "packets": 37514
+    },
+    {
+      "time": "08-17 00:00",
+      "bytes": 42178054,
+      "packets": 36637
+    },
+    {
+      "time": "08-17 04:00",
+      "bytes": 43185719,
+      "packets": 36592
+    },
+    {
+      "time": "08-17 08:00",
+      "bytes": 41291379,
+      "packets": 35901
+    },
+    {
+      "time": "08-17 12:00",
+      "bytes": 40544429,
+      "packets": 34504
+    }
+  ]
+}

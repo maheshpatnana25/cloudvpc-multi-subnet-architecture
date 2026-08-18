@@ -1,0 +1,270 @@
+{
+  "vpc": {
+    "id": "vpc-0a8b9c1d2e3f4001",
+    "name": "Production-Enterprise-VPC",
+    "cidr_block": "10.0.0.0/16",
+    "region": "us-east-1",
+    "enable_dns_hostnames": true,
+    "enable_dns_support": true,
+    "availability_zones": ["us-east-1a", "us-east-1b"]
+  },
+  "gateways": {
+    "internet_gateway": {
+      "id": "igw-09a8b7c6d5e4f3a21",
+      "name": "prod-vpc-igw",
+      "attached_vpc": "vpc-0a8b9c1d2e3f4001",
+      "status": "attached"
+    },
+    "nat_gateways": [
+      {
+        "id": "nat-01a2b3c4d5e6f7001",
+        "name": "prod-nat-gw-us-east-1a",
+        "subnet_id": "subnet-01a_pub_01",
+        "elastic_ip": "54.210.10.22",
+        "private_ip": "10.0.1.50",
+        "az": "us-east-1a"
+      },
+      {
+        "id": "nat-02a2b3c4d5e6f7002",
+        "name": "prod-nat-gw-us-east-1b",
+        "subnet_id": "subnet-01b_pub_02",
+        "elastic_ip": "54.210.20.44",
+        "private_ip": "10.0.2.50",
+        "az": "us-east-1b"
+      }
+    ],
+    "endpoints": [
+      {
+        "id": "vpce-0123456789abcdef0",
+        "service": "com.amazonaws.us-east-1.s3",
+        "type": "Gateway",
+        "route_table_ids": ["rtb-app-az1", "rtb-app-az2"]
+      }
+    ]
+  },
+  "subnets": [
+    {
+      "id": "subnet-01a_pub_01",
+      "name": "prod-public-subnet-1a",
+      "tier": "Public",
+      "cidr_block": "10.0.1.0/24",
+      "availability_zone": "us-east-1a",
+      "route_table_id": "rtb-public",
+      "nacl_id": "nacl-public",
+      "map_public_ip_on_launch": true,
+      "total_ips": 256,
+      "usable_ips": 251,
+      "reserved_ips": [
+        {"ip": "10.0.1.0", "description": "Network Address"},
+        {"ip": "10.0.1.1", "description": "VPC Router"},
+        {"ip": "10.0.1.2", "description": "Amazon Provided DNS"},
+        {"ip": "10.0.1.3", "description": "Future AWS Use"},
+        {"ip": "10.0.1.255", "description": "Broadcast Address"}
+      ],
+      "components": ["Application Load Balancer (Primary)", "NAT Gateway AZ-1", "Bastion Host"]
+    },
+    {
+      "id": "subnet-01b_pub_02",
+      "name": "prod-public-subnet-1b",
+      "tier": "Public",
+      "cidr_block": "10.0.2.0/24",
+      "availability_zone": "us-east-1b",
+      "route_table_id": "rtb-public",
+      "nacl_id": "nacl-public",
+      "map_public_ip_on_launch": true,
+      "total_ips": 256,
+      "usable_ips": 251,
+      "reserved_ips": [
+        {"ip": "10.0.2.0", "description": "Network Address"},
+        {"ip": "10.0.2.1", "description": "VPC Router"},
+        {"ip": "10.0.2.2", "description": "Amazon Provided DNS"},
+        {"ip": "10.0.2.3", "description": "Future AWS Use"},
+        {"ip": "10.0.2.255", "description": "Broadcast Address"}
+      ],
+      "components": ["Application Load Balancer (Secondary)", "NAT Gateway AZ-2"]
+    },
+    {
+      "id": "subnet-10a_app_01",
+      "name": "prod-app-private-subnet-1a",
+      "tier": "Application",
+      "cidr_block": "10.0.10.0/24",
+      "availability_zone": "us-east-1a",
+      "route_table_id": "rtb-app-az1",
+      "nacl_id": "nacl-app",
+      "map_public_ip_on_launch": false,
+      "total_ips": 256,
+      "usable_ips": 251,
+      "components": ["Web & Application Nodes (EC2 / ECS / EKS)"]
+    },
+    {
+      "id": "subnet-20b_app_02",
+      "name": "prod-app-private-subnet-1b",
+      "tier": "Application",
+      "cidr_block": "10.0.20.0/24",
+      "availability_zone": "us-east-1b",
+      "route_table_id": "rtb-app-az2",
+      "nacl_id": "nacl-app",
+      "map_public_ip_on_launch": false,
+      "total_ips": 256,
+      "usable_ips": 251,
+      "components": ["Web & Application Nodes (EC2 / ECS / EKS)"]
+    },
+    {
+      "id": "subnet-100a_db_01",
+      "name": "prod-db-isolated-subnet-1a",
+      "tier": "Database",
+      "cidr_block": "10.0.100.0/24",
+      "availability_zone": "us-east-1a",
+      "route_table_id": "rtb-db-isolated",
+      "nacl_id": "nacl-db",
+      "map_public_ip_on_launch": false,
+      "total_ips": 256,
+      "usable_ips": 251,
+      "components": ["RDS Aurora PostgreSQL Master (Port 5432)"]
+    },
+    {
+      "id": "subnet-200b_db_02",
+      "name": "prod-db-isolated-subnet-1b",
+      "tier": "Database",
+      "cidr_block": "10.0.200.0/24",
+      "availability_zone": "us-east-1b",
+      "route_table_id": "rtb-db-isolated",
+      "nacl_id": "nacl-db",
+      "map_public_ip_on_launch": false,
+      "total_ips": 256,
+      "usable_ips": 251,
+      "components": ["RDS Aurora PostgreSQL Standby Replica"]
+    }
+  ],
+  "route_tables": [
+    {
+      "id": "rtb-public",
+      "name": "prod-public-rt",
+      "associated_subnets": ["subnet-01a_pub_01", "subnet-01b_pub_02"],
+      "routes": [
+        {"destination": "10.0.0.0/16", "target": "local", "status": "Active"},
+        {"destination": "0.0.0.0/0", "target": "igw-09a8b7c6d5e4f3a21", "status": "Active", "type": "Internet Gateway"}
+      ]
+    },
+    {
+      "id": "rtb-app-az1",
+      "name": "prod-app-private-rt-az1",
+      "associated_subnets": ["subnet-10a_app_01"],
+      "routes": [
+        {"destination": "10.0.0.0/16", "target": "local", "status": "Active"},
+        {"destination": "0.0.0.0/0", "target": "nat-01a2b3c4d5e6f7001", "status": "Active", "type": "NAT Gateway"},
+        {"destination": "pl-63a5400a (com.amazonaws.us-east-1.s3)", "target": "vpce-0123456789abcdef0", "status": "Active", "type": "VPC Endpoint"}
+      ]
+    },
+    {
+      "id": "rtb-app-az2",
+      "name": "prod-app-private-rt-az2",
+      "associated_subnets": ["subnet-20b_app_02"],
+      "routes": [
+        {"destination": "10.0.0.0/16", "target": "local", "status": "Active"},
+        {"destination": "0.0.0.0/0", "target": "nat-02a2b3c4d5e6f7002", "status": "Active", "type": "NAT Gateway"},
+        {"destination": "pl-63a5400a (com.amazonaws.us-east-1.s3)", "target": "vpce-0123456789abcdef0", "status": "Active", "type": "VPC Endpoint"}
+      ]
+    },
+    {
+      "id": "rtb-db-isolated",
+      "name": "prod-db-isolated-rt",
+      "associated_subnets": ["subnet-100a_db_01", "subnet-200b_db_02"],
+      "routes": [
+        {"destination": "10.0.0.0/16", "target": "local", "status": "Active"}
+      ],
+      "note": "Strictly NO route to 0.0.0.0/0 (IGW or NAT). Completely isolated database network."
+    }
+  ],
+  "security_groups": [
+    {
+      "id": "sg-01_alb",
+      "name": "alb-security-group",
+      "description": "Permit inbound HTTPS/HTTP from public internet and egress to App SG",
+      "ingress_rules": [
+        {"protocol": "TCP", "port": 443, "source": "0.0.0.0/0", "description": "Public HTTPS traffic"},
+        {"protocol": "TCP", "port": 80, "source": "0.0.0.0/0", "description": "Public HTTP redirection"}
+      ],
+      "egress_rules": [
+        {"protocol": "TCP", "port": 8080, "destination": "sg-02_app", "description": "Forward traffic to App Nodes"}
+      ]
+    },
+    {
+      "id": "sg-01_bastion",
+      "name": "bastion-security-group",
+      "description": "Permit SSH only from approved corporate IP CIDR",
+      "ingress_rules": [
+        {"protocol": "TCP", "port": 22, "source": "198.51.100.0/24", "description": "Corporate VPN SSH Access"}
+      ],
+      "egress_rules": [
+        {"protocol": "TCP", "port": 22, "destination": "sg-02_app", "description": "SSH jump to App servers"}
+      ]
+    },
+    {
+      "id": "sg-02_app",
+      "name": "app-tier-security-group",
+      "description": "Permit ingress from ALB on 8080 and SSH from Bastion",
+      "ingress_rules": [
+        {"protocol": "TCP", "port": 8080, "source": "sg-01_alb", "description": "HTTP traffic from ALB"},
+        {"protocol": "TCP", "port": 22, "source": "sg-01_bastion", "description": "SSH from Bastion"}
+      ],
+      "egress_rules": [
+        {"protocol": "TCP", "port": 5432, "destination": "sg-03_db", "description": "PostgreSQL traffic to DB tier"},
+        {"protocol": "TCP", "port": 443, "destination": "0.0.0.0/0", "description": "Outbound HTTPS via NAT for package updates"}
+      ]
+    },
+    {
+      "id": "sg-03_db",
+      "name": "database-tier-security-group",
+      "description": "Strictly permit database queries ONLY from Application Tier SG",
+      "ingress_rules": [
+        {"protocol": "TCP", "port": 5432, "source": "sg-02_app", "description": "PostgreSQL queries from App Nodes ONLY"}
+      ],
+      "egress_rules": []
+    }
+  ],
+  "network_acls": [
+    {
+      "id": "nacl-public",
+      "name": "nacl-public-subnets",
+      "associated_subnets": ["subnet-01a_pub_01", "subnet-01b_pub_02"],
+      "inbound_rules": [
+        {"rule_number": 100, "protocol": "TCP", "port_range": "80", "source": "0.0.0.0/0", "action": "ALLOW"},
+        {"rule_number": 110, "protocol": "TCP", "port_range": "443", "source": "0.0.0.0/0", "action": "ALLOW"},
+        {"rule_number": 120, "protocol": "TCP", "port_range": "1024-65535", "source": "0.0.0.0/0", "action": "ALLOW", "description": "Ephemeral return ports"},
+        {"rule_number": "*", "protocol": "ALL", "port_range": "ALL", "source": "0.0.0.0/0", "action": "DENY"}
+      ],
+      "outbound_rules": [
+        {"rule_number": 100, "protocol": "ALL", "port_range": "ALL", "destination": "0.0.0.0/0", "action": "ALLOW"}
+      ]
+    },
+    {
+      "id": "nacl-app",
+      "name": "nacl-app-subnets",
+      "associated_subnets": ["subnet-10a_app_01", "subnet-20b_app_02"],
+      "inbound_rules": [
+        {"rule_number": 100, "protocol": "TCP", "port_range": "8080", "source": "10.0.0.0/16", "action": "ALLOW"},
+        {"rule_number": 110, "protocol": "TCP", "port_range": "22", "source": "10.0.1.0/24", "action": "ALLOW"},
+        {"rule_number": 120, "protocol": "TCP", "port_range": "1024-65535", "source": "0.0.0.0/0", "action": "ALLOW"},
+        {"rule_number": "*", "protocol": "ALL", "port_range": "ALL", "source": "0.0.0.0/0", "action": "DENY"}
+      ],
+      "outbound_rules": [
+        {"rule_number": 100, "protocol": "ALL", "port_range": "ALL", "destination": "0.0.0.0/0", "action": "ALLOW"}
+      ]
+    },
+    {
+      "id": "nacl-db",
+      "name": "nacl-db-isolated-subnets",
+      "associated_subnets": ["subnet-100a_db_01", "subnet-200b_db_02"],
+      "inbound_rules": [
+        {"rule_number": 100, "protocol": "TCP", "port_range": "5432", "source": "10.0.10.0/24", "action": "ALLOW"},
+        {"rule_number": 101, "protocol": "TCP", "port_range": "5432", "source": "10.0.20.0/24", "action": "ALLOW"},
+        {"rule_number": "*", "protocol": "ALL", "port_range": "ALL", "source": "0.0.0.0/0", "action": "DENY"}
+      ],
+      "outbound_rules": [
+        {"rule_number": 100, "protocol": "TCP", "port_range": "1024-65535", "destination": "10.0.0.0/16", "action": "ALLOW"},
+        {"rule_number": "*", "protocol": "ALL", "port_range": "ALL", "destination": "0.0.0.0/0", "action": "DENY"}
+      ]
+    }
+  ]
+}
